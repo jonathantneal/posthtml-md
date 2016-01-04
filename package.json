@@ -1,6 +1,6 @@
 {
   "name": "posthtml-md",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Easily use context-sensitive markdown within HTML",
   "keywords": [
     "posthtml",

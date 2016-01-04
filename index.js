@@ -6,8 +6,9 @@ function walk(nodeList, isMarkdown, isInlineContainer) {
 	nodeList.forEach(function (node, index) {
 		if (typeof node === 'string') {
 			if (isMarkdown) {
-				var start = '';
-				var end = '';
+				// preserve spacing
+				var startSpace = '';
+				var trailSpace = '';
 
 				// conditionally trim inner space
 				if (isInlineContainer) {
@@ -16,8 +17,8 @@ function walk(nodeList, isMarkdown, isInlineContainer) {
 
 				// trim node and save trailing spaces
 				node = node.replace(/^(\n*)|(\s*)$/g, function ($0, $1, $2) {
-					start = $1 || start;
-					end   = $2 || end;
+					startSpace = $1 || startSpace;
+					trailSpace = $2 || trailSpace;
 
 					return '';
 				});
@@ -41,11 +42,16 @@ function walk(nodeList, isMarkdown, isInlineContainer) {
 				}
 
 				// restore the minimum number of indents in the string
-				node = start + node.replace(/^/gm, Array(indentsLength + 1).join('\t')) + end;
+				node = startSpace + node.replace(/^/gm, Array(indentsLength + 1).join('\t')) + trailSpace;
 
 				nodeList[index] = node;
 			}
 		} else {
+			// detect markdown element
+			if (/^(markdown|md)$/i.test(node.tag)) {
+				isMarkdown = true;
+			}
+
 			// detect markdown attribute
 			if (node.attrs && 'md' in node.attrs) {
 				delete node.attrs.md;
@@ -61,6 +67,11 @@ function walk(nodeList, isMarkdown, isInlineContainer) {
 			// conditionally parse content
 			if (node.content) {
 				walk(node.content, isMarkdown, isInlineContainer);
+			}
+
+			// replace markdown element with contents
+			if (/^(markdown|md)$/i.test(node.tag)) {
+				nodeList.splice.apply(nodeList, [index, 1].concat(node.content));
 			}
 
 			// reset markdown and strict blocking detection

@@ -11,37 +11,46 @@
 <h1 md>
 	PostCSS **Markdown**
 </h1>
-<p md>
-	It just
+<div md>
+	It knows
 
-	*understands* you.
+	*when* to work.
+</div>
+<p md>
+	It knows
+
+	*how* to work.
 </p>
 <p>
-	How well, you ask?
-</p>
-<div md>
-	I would say...
+	It knows
 
-	Really, **really** well.
-</div>
+	*what* to ignore.
+</p>
+<md>
+	It just [works](https://github.com/jonathantneal/posthtml-md).
+</md>
 
 <!-- AFTER -->
 <h1>
 	PostCSS <strong>Markdown</strong>
 </h1>
-<p>
-	It just <strong>understands</strong> you.
-</p>
-<p>
-	How well, you ask?
-</p>
 <div>
-	<p>I would say...</p>
-	<p>Really, <strong>really</strong> well.</p>
+	<p>It knows</p>
+	<p><em>when</em> to work.</p>
 </div>
+<p>
+	It knows <em>how</em> to work.
+</p>
+<p>
+	It knows
+
+	*what* to ignore.
+</p>
+
+	<p>It just <a href="https://github.com/jonathantneal/posthtml-md">works</a>.</p>
 ```
 
-As you can see, Markdown knows when to write inline or block-level content.
+[Markdown] knows when to write inline or block-level content.
 
 ## Usage
 
