@@ -9,6 +9,7 @@ function walk(nodeList, isMarkdown, isInlineContainer) {
 	var stripParagraph				= /^<p>([\W\w]*)<\/p>$/;
 	var markdownElement				= /^(markdown|md)$/i;
 	var strictBlocking				= /^(abbr|acronym|b|bdo|big|button|cite|dfn|em|h1|h2|h3|h4|h5|h6|i|input|kbd|p|q|samp|select|small|span|strong|sub|sup|textarea|time|var)$/i;
+	var replaceMarkdownElement		= /^(markdown|md|pre)$/i;
 
 	nodeList.forEach(function (node, index) {
 		if (typeof node === 'string') {
@@ -77,7 +78,7 @@ function walk(nodeList, isMarkdown, isInlineContainer) {
 			}
 
 			// replace markdown element with contents
-			if (markdownElement.test(node.tag)) {
+			if (isMarkdown && replaceMarkdownElement.test(node.tag)) {
 				nodeList.splice.apply(nodeList, [index, 1].concat(node.content));
 			}
 
