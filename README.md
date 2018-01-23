@@ -1,13 +1,23 @@
-# Markdown
+# Markdown for PostHTML
 
 <a href="https://github.com/posthtml/posthtml"><img src="http://posthtml.github.io/posthtml/logo.svg" alt="PostHTML Logo" width="80" height="80" align="right"></a>
 
 [![NPM Version][npm-img]][npm] [![Build Status][ci-img]][ci]
 
-[Markdown] allows you to easily use context-sensitive markdown within HTML.
+[posthtml-md] is a markdown plugin for [PostHTML] that lets you use markdown within HTML elements in an easy and intuitive way. 
+
+Main features:
+
+- Works on any tag with a `md` or `markdown` property
+- Knows when to write inline or block-level content
+- Will replace element if tag is `<md>` or `<markdown>`
+- Will treat `pre` tag with `md` or `markdown` property as `<md>` tag
+
+
+## Example
+**From:**
 
 ```html
-<!-- BEFORE -->
 <h1 md>
 	PostCSS **Markdown**
 </h1>
@@ -16,7 +26,7 @@
 
 	*when* to work.
 </div>
-<p md>
+<p markdown>
 	It knows
 
 	*how* to work.
@@ -29,8 +39,18 @@
 <md>
 	It just [works](https://github.com/jonathantneal/posthtml-md).
 </md>
+<pre md>
+	It knows
 
-<!-- AFTER -->
+	- When
+	- How
+	- What
+</pre>
+```
+
+**To:**
+
+```html
 <h1>
 	PostCSS <strong>Markdown</strong>
 </h1>
@@ -48,25 +68,29 @@
 </p>
 
 	<p>It just <a href="https://github.com/jonathantneal/posthtml-md">works</a>.</p>
+
+	<p>It knows</p>
+	<ul>
+	<li>When</li>
+	<li>How</li>
+	<li>What</li>
+	</ul>
 ```
 
-[Markdown] knows when to write inline or block-level content.
 
-## Usage
 
-Add [Markdown] to your build tool:
+## Install
+
+Install [posthtml-md] from npm
 
 ```bash
 npm install posthtml-md --save-dev
 ```
 
-#### Node
+## Usage 
 
-```js
-require('posthtml-md').process(YOUR_HTML, { /* options */ });
-```
 
-#### PostHTML
+### PostHTML
 
 Add [PostHTML] to your build tool:
 
@@ -74,7 +98,7 @@ Add [PostHTML] to your build tool:
 npm install posthtml --save-dev
 ```
 
-Load [Markdown] as a PostHTML plugin:
+Load [posthtml-md] as a PostHTML plugin:
 
 ```js
 posthtml([
@@ -82,7 +106,29 @@ posthtml([
 ]).process(YOUR_HTML, /* options */);
 ```
 
-#### Gulp
+### ParcelJS
+
+To use [posthtml-md] with [ParcelJS] please make a `.posthtmlrc` file with the content
+
+```json
+{
+  "plugins": {
+    "posthtml-md": {
+      "root": "src"
+    }
+  }
+}
+```
+Change the `root` attribute to your actual root folder
+
+### Node
+
+```js
+require('posthtml-md').process(YOUR_HTML, { /* options */ });
+```
+
+
+### Gulp
 
 Add [Gulp PostHTML] to your build tool:
 
@@ -90,7 +136,7 @@ Add [Gulp PostHTML] to your build tool:
 npm install gulp-posthtml --save-dev
 ```
 
-Enable [Markdown] within your Gulpfile:
+Enable [posthtml-md] within your Gulpfile:
 
 ```js
 var posthtml = require('gulp-posthtml');
@@ -106,7 +152,7 @@ gulp.task('html', function () {
 });
 ```
 
-#### Grunt
+### Grunt
 
 Add [Grunt PostHTML] to your build tool:
 
@@ -114,7 +160,7 @@ Add [Grunt PostHTML] to your build tool:
 npm install grunt-posthtml --save-dev
 ```
 
-Enable [Markdown] within your Gruntfile:
+Enable [posthtml-md] within your Gruntfile:
 
 ```js
 grunt.loadNpmTasks('grunt-posthtml');
@@ -141,5 +187,6 @@ grunt.initConfig({
 [Gulp PostHTML]:  https://github.com/posthtml/gulp-posthtml
 [Grunt PostHTML]: https://github.com/TCotton/grunt-posthtml
 [PostHTML]:       https://github.com/posthtml/posthtml
+[posthtml-md]:    https://github.com/jonathantneal/posthtml-md
+[ParcelJS]:       https://parceljs.org
 
-[Markdown]: https://github.com/jonathantneal/posthtml-md
