@@ -3,6 +3,13 @@ var posthtml = require('posthtml');
 var parser   = posthtml();
 
 function walk(nodeList, isMarkdown, isInlineContainer) {
+	var conditionallyTrimInnerSpace = /(\S)\s+(\S)/g;
+	var trimNodeSaveTrailingSpaces 	= /^(\n*)|(\s*)$/g;
+	var minimumNumberOfIndents 		= /^[ \t]+(?=\S)/gm;
+	var stripParagraph				= /^<p>([\W\w]*)<\/p>$/;
+	var markdownElement				= /^(markdown|md)$/i;
+	var strictBlocking				= /^(abbr|acronym|b|bdo|big|button|cite|dfn|em|h1|h2|h3|h4|h5|h6|i|input|kbd|p|q|samp|select|small|span|strong|sub|sup|textarea|time|var)$/i;
+
 	nodeList.forEach(function (node, index) {
 		if (typeof node === 'string') {
 			if (isMarkdown) {
@@ -12,11 +19,11 @@ function walk(nodeList, isMarkdown, isInlineContainer) {
 
 				// conditionally trim inner space
 				if (isInlineContainer) {
-					node = node.replace(/(\S)\s+(\S)/g, '$1 $2');
+					node = node.replace(conditionallyTrimInnerSpace, '$1 $2');
 				}
 
 				// trim node and save trailing spaces
-				node = node.replace(/^(\n*)|(\s*)$/g, function ($0, $1, $2) {
+				node = node.replace(trimNodeSaveTrailingSpaces, function ($0, $1, $2) {
 					startSpace = $1 || startSpace;
 					trailSpace = $2 || trailSpace;
 
@@ -24,7 +31,7 @@ function walk(nodeList, isMarkdown, isInlineContainer) {
 				});
 
 				// get the minimum number of indents in the string
-				var indents = node.match(/^[ \t]+(?=\S)/gm);
+				var indents = node.match(minimumNumberOfIndents);
 
 				var indentsLength = indents ? Math.min.apply(Math, indents.map(function (indent) {
 					return indent.length;
@@ -38,7 +45,7 @@ function walk(nodeList, isMarkdown, isInlineContainer) {
 
 				// conditionally strip paragraph
 				if (isInlineContainer) {
-					node = node.replace(/^<p>([\W\w]*)<\/p>$/, '$1');
+					node = node.replace(stripParagraph, '$1');
 				}
 
 				// restore the minimum number of indents in the string
@@ -48,7 +55,7 @@ function walk(nodeList, isMarkdown, isInlineContainer) {
 			}
 		} else {
 			// detect markdown element
-			if (/^(markdown|md)$/i.test(node.tag)) {
+			if (markdownElement.test(node.tag)) {
 				isMarkdown = true;
 			}
 
@@ -60,7 +67,7 @@ function walk(nodeList, isMarkdown, isInlineContainer) {
 			}
 
 			// detect strict blocking
-			if (node.tag && /^(abbr|acronym|b|bdo|big|button|cite|dfn|em|h1|h2|h3|h4|h5|h6|i|input|kbd|p|q|samp|select|small|span|strong|sub|sup|textarea|time|var)$/i.test(node.tag)) {
+			if (node.tag && strictBlocking.test(node.tag)) {
 				isInlineContainer = true;
 			}
 
@@ -70,7 +77,7 @@ function walk(nodeList, isMarkdown, isInlineContainer) {
 			}
 
 			// replace markdown element with contents
-			if (/^(markdown|md)$/i.test(node.tag)) {
+			if (markdownElement.test(node.tag)) {
 				nodeList.splice.apply(nodeList, [index, 1].concat(node.content));
 			}
 
