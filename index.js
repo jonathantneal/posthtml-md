@@ -61,6 +61,13 @@ function walk(nodeList, isMarkdown, isInlineContainer) {
 			}
 
 			// detect markdown attribute
+			if (node.attrs && 'markdown' in node.attrs) {
+				delete node.attrs.markdown;
+
+				isMarkdown = true;
+			}
+
+			// detect md attribute
 			if (node.attrs && 'md' in node.attrs) {
 				delete node.attrs.md;
 
