@@ -2,7 +2,7 @@ var marked   = require('marked');
 var posthtml = require('posthtml');
 var parser   = posthtml();
 
-function walk(nodeList, isMarkdown, isInlineContainer) {
+function walk(nodeList, isMarkdown, isInlineContainer, options) {
 	var conditionallyTrimInnerSpace = /(\S)\s+(\S)/g;
 	var trimNodeSaveTrailingSpaces 	= /^(\n*)|(\s*)$/g;
 	var minimumNumberOfIndents 		= /^[ \t]+(?=\S)/gm;
@@ -42,7 +42,7 @@ function walk(nodeList, isMarkdown, isInlineContainer) {
 				node = node.replace(new RegExp('^[ \\t]{' + indentsLength + '}', 'gm'), '');
 
 				// convert to markdown
-				node = marked(node).trim();
+				node = marked(node, options).trim();
 
 				// conditionally strip paragraph
 				if (isInlineContainer) {
@@ -81,7 +81,7 @@ function walk(nodeList, isMarkdown, isInlineContainer) {
 
 			// conditionally parse content
 			if (node.content) {
-				walk(node.content, isMarkdown, isInlineContainer);
+				walk(node.content, isMarkdown, isInlineContainer, options);
 			}
 
 			// replace markdown element with contents
@@ -96,9 +96,9 @@ function walk(nodeList, isMarkdown, isInlineContainer) {
 	});
 }
 
-module.exports = function () {
+module.exports = function (options) {
 	return function Markdown(tree) {
-		walk(tree);
+		walk(tree, null, null, options);
 	};
 };
 
