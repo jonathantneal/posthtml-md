@@ -15,7 +15,7 @@
   "homepage": "https://github.com/jonathantneal/posthtml-md#readme",
   "bugs": "https://github.com/jonathantneal/posthtml-md/issues",
   "dependencies": {
-    "marked": "^0.3.5",
+    "marked": "^4.0.10",
     "posthtml": "^0.8.0"
   },
   "devDependencies": {
